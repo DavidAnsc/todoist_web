@@ -5,4 +5,5 @@ export class TodoListModel {
     this.title = title;
     this.parent = parent;
   }
+  
 }

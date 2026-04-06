@@ -1,6 +1,7 @@
 import './App.css'
 import { Navbar } from './components/Navbar'
 import { Sidebar } from './components/sidebar/Sidebar'
+import { SelectionProvider } from './contexts/SelectionProvider'
 
 function App() {
 
@@ -8,7 +9,9 @@ function App() {
     <>
     <div className=''>
       <Navbar />
-      <Sidebar />
+      <SelectionProvider>
+        <Sidebar />
+      </SelectionProvider>
     </div>
     </>
   )

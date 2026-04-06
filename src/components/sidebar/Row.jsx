@@ -1,6 +1,10 @@
 import downArrow from './../../assets/icons/downArrow.png';
+import { SelectionContext } from '../../contexts/SelectionContext';
+import { useContext } from 'react';
 
-export function Row({id, icon, name, children, indent, selected, setSelected}) {
+export function Row({id, icon, name, children, indent}) {
+
+  const {selected, setSelected} = useContext(SelectionContext)
 
   return (
     <>

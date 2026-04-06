@@ -1,7 +1,6 @@
 import sidebarIcon from './../../assets/icons/sidebarIcon.png';
 import { TodoListModel } from '../../fetch/TodoListModel';
 import { SidebarRow } from './SidebarRow';
-import { useState } from 'react';
 
 export function Sidebar() {
 
@@ -11,7 +10,8 @@ export function Sidebar() {
     new TodoListModel(3, '🐼', 'list3', null),
   ];
 
-  const [selected, setSelected] = useState(1);
+  // const [selected, setSelected] = useState(1);
+  
 
   const parentObjectList = lists
     .filter((l) => {
@@ -29,7 +29,7 @@ export function Sidebar() {
         <div className='mt-5'>
           {/* List rows would go here */}
           {parentObjectList.map((list) => (
-            <SidebarRow key={list.id} id={list.id} list={lists} icon={list.icon} name={list.title} selected={selected} setSelected={setSelected} />
+            <SidebarRow key={list.id} id={list.id} list={lists} icon={list.icon} name={list.title} />
           ))}
         </div>
       </div>
