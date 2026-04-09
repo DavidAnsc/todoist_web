@@ -3,7 +3,7 @@
 import { Row } from './Row';
 
 export function SidebarRow({list, id, icon, name}) {
-
+  // console.log(list)
   const childrenObjects = list.filter((l) => l.parent === id);
 
   return (

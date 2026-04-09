@@ -1,5 +1,5 @@
 import downArrow from './../../assets/icons/downArrow.png';
-import { SelectionContext } from '../../contexts/SelectionContext';
+import { SelectionContext } from '../../contexts/Contexts';
 import { useContext } from 'react';
 
 export function Row({id, icon, name, children, indent}) {

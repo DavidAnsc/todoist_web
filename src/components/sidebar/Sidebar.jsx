@@ -1,22 +1,19 @@
 import sidebarIcon from './../../assets/icons/sidebarIcon.png';
-import { TodoListModel } from '../../fetch/TodoListModel';
 import { SidebarRow } from './SidebarRow';
+import { useContext, useEffect } from 'react';
+import { TodoListsContext } from '../../contexts/Contexts';
 
 export function Sidebar() {
+  const {todoLists} = useContext(TodoListsContext) ?? [];
 
-  const lists = [
-    new TodoListModel(1, '🤨', 'list1', null),
-    new TodoListModel(2, '😅', 'list2', 1),
-    new TodoListModel(3, '🐼', 'list3', null),
-  ];
-
-  // const [selected, setSelected] = useState(1);
-  
-
-  const parentObjectList = lists
+  const parentObjectList = todoLists
     .filter((l) => {
       return l.parent === null
     })
+
+  useEffect(() => {
+    
+  }, []);
 
   return (
     <>
@@ -29,7 +26,7 @@ export function Sidebar() {
         <div className='mt-5'>
           {/* List rows would go here */}
           {parentObjectList.map((list) => (
-            <SidebarRow key={list.id} id={list.id} list={lists} icon={list.icon} name={list.title} />
+            <SidebarRow key={list.id} id={list.id} list={todoLists} icon={list.icon} name={list.title} />
           ))}
         </div>
       </div>
