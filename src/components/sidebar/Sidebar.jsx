@@ -17,7 +17,7 @@ export function Sidebar() {
 
   return (
     <>
-    <div className="ml-5 mt-5">
+    <div className="ml-5 mt-5 fixed left-0 top-14.5">
       <div className="w-50 h-[calc(100vh-98px)] bg-white rounded-3xl border border-[#B0B0B0]">
         <div className='flex mt-2 items-center justify-between'>
           <h1 className="ml-4 inter-font font-extralight tracking-tight text-3xl">lists</h1>

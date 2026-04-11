@@ -1,6 +1,6 @@
 export const Priorities = {
   LOW: "LOW",
-  MED: "MEDIUM",
+  MED: "MED",
   HIGH: "HIGH"
 }
 

@@ -39,22 +39,24 @@ export function Viewport() {
 
   return (
     <>
-    <div className="lg:w-200 mt-20">
-    {(() => {
-      if (selectedList !== undefined && correspondingTodos != [null]) {
-        return (
-          <>
-            <div className="flex items-center mb-10">
-              <h1 className="inter-font font-extralight tracking-wide text-2xl mr-3">{selectedList.icon}</h1>
-              <h1 className="inter-font font-extralight tracking-wide text-4xl">{selectedList.title}</h1>
-            </div>
-            {correspondingTodos.map((todo) => (
-              <TodoRow key={todo.id} todo={todo} box={{boxFocused, setBoxFocused}} />
-            ))}
-          </>
-        );
-      }
-    })()}
+    <div className="lg:w-200">
+      {(() => {
+        if (selectedList !== undefined && correspondingTodos != [null]) {
+          return (
+            <>
+              <div className="fixed w-full z-10 flex pt-28 items-center pb-10 bg-[#E5E5E5]">
+                <h1 className="inter-font font-extralight tracking-wide text-2xl mr-3">{selectedList.icon}</h1>
+                <h1 className="inter-font font-extralight tracking-wide text-4xl">{selectedList.title}</h1>
+              </div>
+              <div className="relative top-55 z-0 pb-10">
+                {correspondingTodos.map((todo) => (
+                  <TodoRow key={todo.id} todo={todo} box={{boxFocused, setBoxFocused}} />
+                ))}
+              </div>
+            </>
+          );
+        }
+      })()}
     </div>
     </>
   )

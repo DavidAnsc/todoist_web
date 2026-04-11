@@ -17,6 +17,26 @@ export function TodosProvider({children}) {
   const [todos, setTodos] = useState([
     new TodoModel(1, "read book", "Read a book as cool as American Prometheus", Priorities.LOW, false, {id: 1, icon: "🤨", title: "list1", parent: null}),
     new TodoModel(2, "build a SwiftUI app", "", Priorities.HIGH, true, {id: 2, icon: "😅", title: "list2", parent: 1}),
+    new TodoModel(2, "build a SwiftUI app", "", Priorities.HIGH, true, {id: 2, icon: "😅", title: "list2", parent: 1}),
+    new TodoModel(2, "build a SwiftUI app", "", Priorities.HIGH, true, {id: 2, icon: "😅", title: "list2", parent: 1}),
+    new TodoModel(2, "build a SwiftUI app", "", Priorities.HIGH, true, {id: 2, icon: "😅", title: "list2", parent: 1}),
+    new TodoModel(2, "build a SwiftUI app", "", Priorities.HIGH, true, {id: 2, icon: "😅", title: "list2", parent: 1}),
+    new TodoModel(2, "build a SwiftUI app", "", Priorities.HIGH, true, {id: 2, icon: "😅", title: "list2", parent: 1}),
+    new TodoModel(2, "build a SwiftUI app", "", Priorities.HIGH, true, {id: 2, icon: "😅", title: "list2", parent: 1}),
+    new TodoModel(2, "build a SwiftUI app", "", Priorities.HIGH, true, {id: 2, icon: "😅", title: "list2", parent: 1}),
+    new TodoModel(2, "build a SwiftUI app", "", Priorities.HIGH, true, {id: 2, icon: "😅", title: "list2", parent: 1}),
+    new TodoModel(2, "build a SwiftUI app", "", Priorities.HIGH, true, {id: 2, icon: "😅", title: "list2", parent: 1}),
+    new TodoModel(2, "build a SwiftUI app", "", Priorities.HIGH, true, {id: 2, icon: "😅", title: "list2", parent: 1}),
+    new TodoModel(2, "build a SwiftUI app", "", Priorities.HIGH, true, {id: 2, icon: "😅", title: "list2", parent: 1}),
+    new TodoModel(2, "build a SwiftUI app", "", Priorities.HIGH, true, {id: 2, icon: "😅", title: "list2", parent: 1}),
+    new TodoModel(2, "build a SwiftUI app", "", Priorities.HIGH, true, {id: 2, icon: "😅", title: "list2", parent: 1}),
+    new TodoModel(2, "build a SwiftUI app", "", Priorities.HIGH, true, {id: 2, icon: "😅", title: "list2", parent: 1}),
+    new TodoModel(2, "build a SwiftUI app", "", Priorities.HIGH, true, {id: 2, icon: "😅", title: "list2", parent: 1}),
+    new TodoModel(2, "build a SwiftUI app", "", Priorities.HIGH, true, {id: 2, icon: "😅", title: "list2", parent: 1}),
+    new TodoModel(2, "build a SwiftUI app", "", Priorities.HIGH, true, {id: 2, icon: "😅", title: "list2", parent: 1}),
+    new TodoModel(2, "build a SwiftUI app", "", Priorities.HIGH, true, {id: 2, icon: "😅", title: "list2", parent: 1}),
+    new TodoModel(2, "build a SwiftUI app", "", Priorities.HIGH, true, {id: 2, icon: "😅", title: "list2", parent: 1}),
+    new TodoModel(2, "build a SwiftUI app", "", Priorities.HIGH, true, {id: 2, icon: "😅", title: "list2", parent: 1}),
     new TodoModel(3, "build a React web app", "", Priorities.MED, false, {id: 2, icon: "😅", title: "list2", parent: 1})
   ]);
 
