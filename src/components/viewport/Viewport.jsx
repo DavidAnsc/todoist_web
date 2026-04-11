@@ -24,7 +24,7 @@ export function Viewport() {
   useEffect(() => {
     function handleRandomClick(event) {
       const target = event.target.closest("[data-todo-id]");
-      const emojiTarget = event.target.closest("[emojiId]");
+      const emojiTarget = event.target.closest("[emojiid]");
       if (!showEmojiPicker) {
         if (boxFocused !== -1 && target) {
           return;
@@ -50,8 +50,8 @@ export function Viewport() {
   }, [boxFocused, showEmojiPicker])
 
   const updateTitle = (title) => {
-    setTodoLists((prevList) =>
-      prevList.map((t) =>
+    setTodoLists((prevLists) =>
+      prevLists.map((t) =>
         t.id === selectedList.id ? {...t, title: title} : t
       )
     );
@@ -66,7 +66,7 @@ export function Viewport() {
             <>
               <div className="fixed w-full z-10 flex pt-28 items-center pb-6 bg-[#E5E5E5]">
                 <div className="relative">
-                  <h1 emojiId="-1" onClick={() => setShowEmojiPicker(!showEmojiPicker)} className="inter-font font-extralight tracking-wide text-2xl mr-2 cursor-pointer">{selectedList.icon}</h1>
+                  <h1 emojiid="-1" onClick={() => setShowEmojiPicker(!showEmojiPicker)} className="select-none inter-font font-extralight tracking-wide text-2xl mr-2 cursor-pointer">{selectedList.icon}</h1>
                   <EmojiChooser emojiPickerState={{showEmojiPicker,setShowEmojiPicker}} />
                 </div>
                 <input value={selectedList.title} onChange={(e) => updateTitle(e.target.value)} className="focus:outline-none p-2 focus:bg-gray-100 rounded-lg focus:ring-0 inter-font font-extralight tracking-wide text-4xl"></input>
@@ -101,8 +101,8 @@ export function EmojiChooser({emojiPickerState}) {
   }).at(0);
 
   const updateIcon = (emoji) => {
-    setTodoLists((prevList) =>
-      prevList.map((t) =>
+    setTodoLists((prevLists) =>
+      prevLists.map((t) =>
         t.id === selectedList.id ? {...t, icon: emoji} : t
       )
     );
@@ -111,7 +111,7 @@ export function EmojiChooser({emojiPickerState}) {
   };
 
   return (
-    <EmojiPicker.Root emojiId="0" onEmojiSelect={(e) => updateIcon(e.emoji)} style={{display: showEmojiPicker ? "" : "none"}} className="absolute isolate flex h-92 w-fit flex-col bg-white dark:bg-neutral-900 rounded-xl">
+    <EmojiPicker.Root emojiid="0" onEmojiSelect={(e) => updateIcon(e.emoji)} style={{display: showEmojiPicker ? "" : "none"}} className="absolute isolate flex h-92 w-fit flex-col bg-white dark:bg-neutral-900 rounded-xl">
       <EmojiPicker.Search value={searchContent} onChange={(e) => setSearchContent(e.target.value)} className="z-10 mx-2 mt-2 appearance-none rounded-md bg-neutral-100 px-2.5 py-2 text-sm dark:bg-neutral-800" />
       <EmojiPicker.Viewport className="relative flex-1 outline-hidden">
         <EmojiPicker.Loading className="absolute inset-0 flex items-center justify-center text-neutral-400 text-sm dark:text-neutral-500">

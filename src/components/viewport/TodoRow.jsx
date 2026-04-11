@@ -86,7 +86,7 @@ export function TodoRow({ todo, box }) {
                   display: isEditing ? "none" : "",
                   transition: "display 200ms ease",
                 }}
-                className="mr-1.5"
+                className="mr-1.5 select-none font-bold"
               >
                 {todo.priority === Priorities.HIGH ? "!!!" : todo.priority === Priorities.MED ? "!!" : "!"}
               </h1>
