@@ -103,7 +103,7 @@ export function TodoRow({ todo, box }) {
                   onChange={(e) => { updateTitle(e.target.value); handleFocusClick(true) }}
                   rows="1"
                   style={{ display: isEditing ? "" : "none" }}
-                  className="w-full col-start-1 row-start-1 inter-font resize-none focus:outline-none focus:ring-0"
+                  className="w-full col-start-1 row-start-1 inter-font focus:outline-none focus:ring-0"
                 />
                 <div
                   style={{ display: isEditing ? "none" : "" }}
