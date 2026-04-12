@@ -26,7 +26,7 @@ function AppContent() {
   useEffect(() => {
     async function runInit() {
 
-      const tempToken = await postRefresh("/auth/refresh", setToken, setError);
+      const tempToken = await postRefresh("/auth/refresh", setToken);
       if (tempToken === null) {
         // not logged in
         console.log("not logged in");
@@ -37,8 +37,8 @@ function AppContent() {
       }
 
       setShowLogin(false);
-      setShowSignup(false);
-      await getUserGetInfo("/auth/getUserInfo", setUser, tempToken, setError);
+      setShowSignup(false); 
+      await getUserGetInfo("/auth/getUserInfo", setUser, tempToken);
     }
 
     runInit();

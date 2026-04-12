@@ -7,7 +7,7 @@ import { getUserLogout } from "../fetch/fetchers/APIDataFetcher";
 export function Navbar({userState, loginState, tokenState}) {
   const { setError } = useContext(ErrorBadgeContext);
   const {user, setUser} = userState;
-  const {showLogin, setShowLogin} = loginState;
+  const {setShowLogin} = loginState;
   const {jwtToken, setToken} = tokenState;
 
   const [showMenu, setShowMenu] = useState(false);
