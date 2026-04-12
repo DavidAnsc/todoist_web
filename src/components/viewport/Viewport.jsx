@@ -1,6 +1,6 @@
 import { SelectionContext, TodoListsContext, TodosContext } from "../../contexts/Contexts";
 import { useContext, useEffect, useState } from "react";
-import { Priorities } from "../../fetch/TodoModel";
+import { Priorities } from "../../fetch/models/TodoModel";
 import { TodoRow } from "./TodoRow";
 
 import { EmojiPicker } from "frimousse";

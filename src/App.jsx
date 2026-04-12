@@ -4,11 +4,11 @@ import { Navbar } from './components/Navbar'
 import { Sidebar } from './components/sidebar/Sidebar'
 import { Viewport } from './components/viewport/Viewport'
 import { SelectionProvider, TodoListsProvider, TodosProvider } from './contexts/Providers'
-import { TodoListModel } from './fetch/TodoListModel'
-import { Priorities } from './fetch/TodoModel'
-import { TodoModel } from "./fetch/TodoModel"
+import { TodoListModel } from './fetch/models/TodoListModel'
+import { Priorities } from './fetch/models/TodoModel'
+import { TodoModel } from "./fetch/models/TodoModel"
 import { LogInSheet, SignUpSheet } from './components/account/SignInView'
-import { postRefreshToken, getUserGetInfo } from './fetch/APIDataFetcher'
+import { postRefreshToken, getUserGetInfo } from './fetch/fetchers/APIDataFetcher'
 
 function App() {
   //TODO: implement the scroll view that is needed for the viewport.
@@ -46,7 +46,7 @@ function App() {
     <>
       <div className="grid w-full h-full">
         <div className='row-start-1 col-start-1 relative'>
-          <Navbar userState={{ user, setUser }} loginState={{ showLogin, setShowLogin }} />
+          <Navbar userState={{user, setUser}} loginState={{showLogin, setShowLogin}} tokenState={{jwtToken, setToken}} setShowLogin={setShowLogin} />
           <TodosProvider>
             <TodoListsProvider>
               <SelectionProvider>
@@ -61,7 +61,7 @@ function App() {
           </TodosProvider>
         </div>
 
-        <div className="grid place-items-center row-start-1 col-start-1 mx-auto my-auto">
+        <div className="grid place-items-center h-screen row-start-1 col-start-1 mx-auto my-auto z-1000000">
           <LogInSheet userState={{ user, setUser }} signupState={{ showSignup, setShowSignup }} loginState={{ showLogin, setShowLogin }} tokenState={{ jwtToken, setToken }} />
           <SignUpSheet signupState={{ showSignup, setShowSignup }} loginState={{ showLogin, setShowLogin }} />
         </div>

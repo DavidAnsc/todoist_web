@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { SelectionContext, TodosContext, TodoListsContext } from "./Contexts";
-import { TodoModel, Priorities } from "../fetch/TodoModel";
-import { TodoListModel } from "../fetch/TodoListModel";
+import { SelectionContext, TodosContext, TodoListsContext, ErrorBadgeContext } from "./Contexts";
+import { TodoModel, Priorities } from "../fetch/models/TodoModel";
+import { TodoListModel } from "../fetch/models/TodoListModel";
 
 export function SelectionProvider({ children }) {
   const [selected, setSelected] = useState(0);
@@ -12,6 +12,21 @@ export function SelectionProvider({ children }) {
     </SelectionContext.Provider>
   );
 }
+
+
+export function ErrorBadgeProvider({children}) {
+  const [error, setError] = useState(null);
+  
+  return (
+    <>
+    <ErrorBadgeContext.Provider value={{error, setError}}>
+      {children}
+    </ErrorBadgeContext.Provider>
+    </>
+  );
+}
+
+
 
 export function TodosProvider({children}) {
   const [todos, setTodos] = useState([

@@ -1,26 +1,31 @@
 import GoogleButton from "./small_components/GoogleButton";
 import downArrow from "../../assets/icons/downArrow.png"
 import { useState } from "react";
-import { postUserRegister, postUserLogin, getUserGetInfo } from "../../fetch/APIDataFetcher";
+import { postUserRegister, postUserLogin, getUserGetInfo } from "../../fetch/fetchers/APIDataFetcher";
 
 export function LogInSheet({ loginState, signupState, userState, tokenState }) {
   const {user, setUser} = userState;
 
   const { showLogin, setShowLogin } = loginState;
   const { setShowSignup } = signupState;
-  const {jwtToken, setToken} = tokenState;
+  const { setToken } = tokenState;
 
   const [usernameOrEmail, setUsernameOrEmail] = useState(null);
   const [password, setPassword] = useState(null);
 
   async function handleSubmit(i) {
     i.preventDefault();
-    const output = await postUserLogin("/auth/login", usernameOrEmail, password, setToken);
-    if (await output === null) {
+    const output = await postUserLogin(
+      "/auth/login",
+      usernameOrEmail.trim(),
+      password,
+      setToken
+    );
+    if (output === null) {
       return;
     }
 
-    await getUserGetInfo("/auth/getUserInfo", setUser, jwtToken);
+    await getUserGetInfo("/auth/getUserInfo", setUser, output.jwtToken);
 
     setShowLogin(false);
     setShowSignup(false);
@@ -77,9 +82,9 @@ export function SignUpSheet({signupState, loginState}) {
   const [displayName, setDisplayName] = useState(null);
   const [email, setEmail] = useState(null);
 
-  function handleSubmit(i) {
+  async function handleSubmit(i) {
     i.preventDefault();
-    const output = postUserRegister("/auth/register", username, password, displayName, email);
+    const output = await postUserRegister("/auth/register", username.trim(), password, displayName.trim(), email.trim());
     if (output === null) {
       return;
     }

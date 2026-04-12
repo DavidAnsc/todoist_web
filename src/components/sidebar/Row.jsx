@@ -10,23 +10,29 @@ export function Row({id, icon, name, children, indent, childState}) {
   const {setTodoLists} = useContext(TodoListsContext) ?? [];
 
   const [onHover, setOnHover] = useState(false);
-  const [onEdit, setOnEdit] = useState(null);
+  const [onEdit, setOnEdit] = useState(false);
 
   const inputRef = useRef({});
 
   const setTodoListTitle = (title) => {
     setTodoLists((prevLists) => 
       prevLists.map((t) =>
-        t.id == selected ? {...t, title: title} : t
+        t.id === id ? {...t, title: title} : t
       )
     )
   };
 
   useEffect(() => {
-    if (onEdit === true) {
-      inputRef.current?.focus();
+    function handle() {
+      inputRef.current.focus();
+      inputRef.current.focus();
+      console.log(onEdit);
     }
-  }, [onEdit]);
+
+    if (onEdit) {
+      handle();
+    }
+  }, [onEdit])
 
   return (
     <>
@@ -42,12 +48,12 @@ export function Row({id, icon, name, children, indent, childState}) {
           <h1 className="ml-2 text-xs">{icon}</h1>
           <div className="grid place-items-start">
             <h1 style={{display: onEdit ? "none" : ""}} className="col-start-1 row-start-1 text-sm font-extralight p-0.5">{name}</h1>
-            <input onBlur={() => setOnEdit(false)} ref={inputRef} style={{display: onEdit ? "" : "none"}} value={name} onChange={(e) => setTodoListTitle(e.target.value)} className="col-start-1 row-start-1 text-sm font-extralight w-2/3 focus:outline-none p-0.5 focus:bg-gray-100 rounded-sm focus:ring-0"></input>
+            <input onBlur={() => setOnEdit(false)} ref={inputRef} style={{display: onEdit ? "" : "none"}} value={name} onChange={(e) => setTodoListTitle(e.target.value)} className="col-start-1 row-start-1 text-sm font-extralight w-2/3 focus:outline-none p-0.5 focus:bg-white rounded-sm focus:ring-0"></input>
           </div>
         </div>
 
         <div className="flex items-center select-none">
-          <img src={editIcon} style={{visibility: onHover ? "" : "hidden"}} onClick={() => setOnEdit(true)} className="w-3 aspect-square relative right-2 cursor-pointer"></img>
+          <img src={editIcon} style={{visibility: onHover ? "" : "hidden"}} onClick={() => { setSelected(id); setOnEdit(true); }} className="w-3 aspect-square relative right-2 cursor-pointer"></img>
           { children == undefined || children.length < 1 ? 
             null : 
             <img 

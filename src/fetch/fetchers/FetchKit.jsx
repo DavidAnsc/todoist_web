@@ -39,6 +39,21 @@ export async function postUrl(url, body) {
   return output;
 }
 
+export async function postUrlNoCred(url, body) {
+  // body here should be a js object.
+  const r = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body),
+  });
+
+  const output = await r.json();
+  console.log(output);
+  return output;
+}
+
 export async function postUrlWithBearer(url, body, token) {
   const r = await fetch(url, {
     method: 'POST',

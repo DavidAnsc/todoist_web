@@ -1,4 +1,4 @@
-import { Priorities } from "../../fetch/TodoModel";
+import { Priorities } from "../../fetch/models/TodoModel";
 import { useContext, useState, useRef, useEffect } from "react";
 import { TodosContext } from "../../contexts/Contexts";
 import downArrow from "../../assets/icons/downArrow.png"
