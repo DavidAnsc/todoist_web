@@ -5,3 +5,8 @@ export class ErrorBadge {
     this.severity = severity;
   }
 }
+
+export const Severities = {
+  MED: "MED",
+  HIGH: "HIGH"
+}

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { SelectionContext, TodosContext, TodoListsContext, ErrorBadgeContext } from "./Contexts";
 import { TodoModel, Priorities } from "../fetch/models/TodoModel";
 import { TodoListModel } from "../fetch/models/TodoListModel";
+import { ErrorBadge } from "../fetch/models/ErrorBadgeModel";
 
 export function SelectionProvider({ children }) {
   const [selected, setSelected] = useState(0);
@@ -15,11 +16,11 @@ export function SelectionProvider({ children }) {
 
 
 export function ErrorBadgeProvider({children}) {
-  const [error, setError] = useState(null);
+  const [err, setError] = useState(null);
   
   return (
     <>
-    <ErrorBadgeContext.Provider value={{error, setError}}>
+    <ErrorBadgeContext.Provider value={{err, setError}}>
       {children}
     </ErrorBadgeContext.Provider>
     </>

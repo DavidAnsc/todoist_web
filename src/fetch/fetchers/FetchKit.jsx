@@ -8,8 +8,12 @@ export async function getUrl(url) {
       }
     });
 
-  const output = await r.json();
-  return output;
+  try {
+    const output = await r.json();
+    return output;
+  } catch {
+    return null;
+  }
 }
 
 export async function getUrlWithBearer(url, token) {
@@ -21,8 +25,12 @@ export async function getUrlWithBearer(url, token) {
     credentials: "include",
   })
 
-  const output = await r.json();
-  return output;
+  try {
+    const output = await r.json();
+    return output;
+  } catch {
+    return null;
+  }
 }
 
 export async function postUrl(url, body) {
@@ -35,8 +43,13 @@ export async function postUrl(url, body) {
     body: JSON.stringify(body),
     credentials: "include",
   });
-  const output = await r.json();
-  return output;
+  
+  try {
+    const output = await r.json();
+    return output;
+  } catch {
+    return null;
+  }
 }
 
 export async function postUrlNoCred(url, body) {
@@ -49,9 +62,12 @@ export async function postUrlNoCred(url, body) {
     body: JSON.stringify(body),
   });
 
-  const output = await r.json();
-  console.log(output);
-  return output;
+  try {
+    const output = await r.json();
+    return output;
+  } catch {
+    return null;
+  }
 }
 
 export async function postUrlWithBearer(url, body, token) {
@@ -65,7 +81,10 @@ export async function postUrlWithBearer(url, body, token) {
     credentials: "include",
   })
 
-  const output = await r.json();
-  return output;
+  try {
+    const output = await r.json();
+    return output;
+  } catch {
+    return null;
+  }
 }
-//TODO: post with auth ------>> getUserInfo POST

@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { ErrorBadgeContext } from "../contexts/Contexts";
 import exitImage from "../assets/icons/exit.png";
 import settingImage from "../assets/icons/setting.png";
 import { getUserLogout } from "../fetch/fetchers/APIDataFetcher";
 
 export function Navbar({userState, loginState, tokenState}) {
-
+  const { setError } = useContext(ErrorBadgeContext);
   const {user, setUser} = userState;
   const {showLogin, setShowLogin} = loginState;
   const {jwtToken, setToken} = tokenState;
@@ -13,13 +14,13 @@ export function Navbar({userState, loginState, tokenState}) {
 
   function logoutUser() {
     setShowMenu(false);
-    getUserLogout("/auth/logout", jwtToken, setUser, setToken);
+    getUserLogout("/auth/logout", jwtToken, setUser, setToken, setError);
     setShowLogin(true);
   }
 
   return (
     <>
-    <div className="fixed top-0 w-full bg-[#E5E5E5] z-999999">
+    <div className="fixed top-0 w-full bg-[#E5E5E5] z-999">
       <div className="flex justify-between items-center px-6 pt-2">
         <h1 className="sm:text-2xl md:text-3xl lg:text-4xl sora-font tracking-tighter">todoist</h1>
         <div className="flex gap-3 items-center lg:text-lg">

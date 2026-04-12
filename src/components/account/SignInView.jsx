@@ -1,6 +1,7 @@
-import GoogleButton from "./small_components/GoogleButton";
+import GoogleButton from "../small_components/GoogleButton";
 import downArrow from "../../assets/icons/downArrow.png"
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { ErrorBadgeContext } from "../../contexts/Contexts";
 import { postUserRegister, postUserLogin, getUserGetInfo } from "../../fetch/fetchers/APIDataFetcher";
 
 export function LogInSheet({ loginState, signupState, userState, tokenState }) {
@@ -13,19 +14,22 @@ export function LogInSheet({ loginState, signupState, userState, tokenState }) {
   const [usernameOrEmail, setUsernameOrEmail] = useState(null);
   const [password, setPassword] = useState(null);
 
+  const { setError } = useContext(ErrorBadgeContext);
+
   async function handleSubmit(i) {
     i.preventDefault();
     const output = await postUserLogin(
       "/auth/login",
       usernameOrEmail.trim(),
-      password,
-      setToken
+      password.trim(),
+      setToken,
+      setError
     );
     if (output === null) {
       return;
     }
 
-    await getUserGetInfo("/auth/getUserInfo", setUser, output.jwtToken);
+    await getUserGetInfo("/auth/getUserInfo", setUser, output.jwtToken, setError);
 
     setShowLogin(false);
     setShowSignup(false);
@@ -76,6 +80,7 @@ export function LogInSheet({ loginState, signupState, userState, tokenState }) {
 export function SignUpSheet({signupState, loginState}) {
   const { setShowLogin } = loginState;
   const { showSignup, setShowSignup } = signupState;
+  const { setError } = useContext(ErrorBadgeContext);
 
   const [username, setUsername] = useState(null);
   const [password, setPassword] = useState(null);
@@ -84,7 +89,7 @@ export function SignUpSheet({signupState, loginState}) {
 
   async function handleSubmit(i) {
     i.preventDefault();
-    const output = await postUserRegister("/auth/register", username.trim(), password, displayName.trim(), email.trim());
+    const output = await postUserRegister("/auth/register", username.trim(), password, displayName.trim(), email.trim(), setError);
     if (output === null) {
       return;
     }

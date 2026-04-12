@@ -1,71 +1,88 @@
-import { useEffect, useState } from 'react'
-import './App.css'
-import { Navbar } from './components/Navbar'
-import { Sidebar } from './components/sidebar/Sidebar'
-import { Viewport } from './components/viewport/Viewport'
-import { SelectionProvider, TodoListsProvider, TodosProvider } from './contexts/Providers'
-import { TodoListModel } from './fetch/models/TodoListModel'
-import { Priorities } from './fetch/models/TodoModel'
-import { TodoModel } from "./fetch/models/TodoModel"
-import { LogInSheet, SignUpSheet } from './components/account/SignInView'
-import { postRefreshToken, getUserGetInfo } from './fetch/fetchers/APIDataFetcher'
+import { useContext, useEffect, useState } from "react"
+import "./App.css"
+import { Navbar } from "./components/Navbar"
+import { Sidebar } from "./components/sidebar/Sidebar"
+import { Viewport } from "./components/viewport/Viewport"
+import { SelectionProvider, TodoListsProvider, TodosProvider, ErrorBadgeProvider } from "./contexts/Providers"
+import { LogInSheet, SignUpSheet } from "./components/account/SignInView"
+import { postRefresh, getUserGetInfo } from "./fetch/fetchers/APIDataFetcher"
+import { ErrorBadgeContext } from "./contexts/Contexts"
+import { ErrorBadge } from "./fetch/models/ErrorBadgeModel"
+import { Severities } from "./fetch/models/ErrorBadgeModel"
+import { handleShowError } from "./SetError"
+import { ErrBadge } from "./components/error/ErrBadge"
 
-function App() {
-  //TODO: implement the scroll view that is needed for the viewport.
-
-
+function AppContent() {
   const [showSignup, setShowSignup] = useState(null);
   const [showLogin, setShowLogin] = useState(null);
 
   const [user, setUser] = useState(null);
   const [jwtToken, setToken] = useState(null);
 
+  const { setError } = useContext(ErrorBadgeContext);
+  const showAuthOverlay = Boolean(showSignup || showLogin);
+
+
   useEffect(() => {
     async function runInit() {
-      const tempToken = await postRefreshToken("/auth/refresh", setToken);
-      if (tempToken.timestamp !== undefined) {
-        if (tempToken.status === 500) {
-          // not logged in
-          console.log("not logged in");
-          setShowLogin(true);
-          setShowSignup(false);
-          return;
-        }
+
+      const tempToken = await postRefresh("/auth/refresh", setToken, setError);
+      if (tempToken === null) {
+        // not logged in
+        console.log("not logged in");
+        handleShowError(new ErrorBadge("You're not logged in", "Pls log in using the sheet", Severities.MED), setError);
+        setShowLogin(true);
+        setShowSignup(false);
+        return;
       }
 
       setShowLogin(false);
       setShowSignup(false);
-      await getUserGetInfo("/auth/getUserInfo", setUser, tempToken);
+      await getUserGetInfo("/auth/getUserInfo", setUser, tempToken, setError);
     }
 
     runInit();
 
-  }, []);
+  }, [setError]);
 
   return (
     <>
-      <div className="grid w-full h-full">
-        <div className='row-start-1 col-start-1 relative'>
-          <Navbar userState={{user, setUser}} loginState={{showLogin, setShowLogin}} tokenState={{jwtToken, setToken}} setShowLogin={setShowLogin} />
-          <TodosProvider>
-            <TodoListsProvider>
-              <SelectionProvider>
-                <div className="flex items-start">
-                  <Sidebar />
-                  <div className="flex flex-1 justify-center">
-                    <Viewport />
-                  </div>
+      <div className="relative w-full min-h-screen">
+        <Navbar userState={{ user, setUser }} loginState={{ showLogin, setShowLogin }} tokenState={{ jwtToken, setToken }} setShowLogin={setShowLogin} />
+        <TodosProvider>
+          <TodoListsProvider>
+            <SelectionProvider>
+              <div className="flex items-start">
+                <Sidebar />
+                <div className="flex flex-1 justify-center">
+                  <Viewport />
                 </div>
-              </SelectionProvider>
-            </TodoListsProvider>
-          </TodosProvider>
-        </div>
+              </div>
+            </SelectionProvider>
+          </TodoListsProvider>
+        </TodosProvider>
+      </div>
 
-        <div className="grid place-items-center h-screen row-start-1 col-start-1 mx-auto my-auto z-1000000">
+      <div className="fixed left-1/2 top-1/5 -translate-x-1/2 -translate-y-1/2 z-2000">
+        <ErrBadge />
+      </div>
+
+      {showAuthOverlay && (
+        <div className="fixed inset-0 z-1000 grid place-items-center">
           <LogInSheet userState={{ user, setUser }} signupState={{ showSignup, setShowSignup }} loginState={{ showLogin, setShowLogin }} tokenState={{ jwtToken, setToken }} />
           <SignUpSheet signupState={{ showSignup, setShowSignup }} loginState={{ showLogin, setShowLogin }} />
         </div>
-      </div>
+      )}
+    </>
+  );
+}
+
+function App() {
+  return (
+    <>
+      <ErrorBadgeProvider>
+        <AppContent />
+      </ErrorBadgeProvider>
     </>
   );
 }
