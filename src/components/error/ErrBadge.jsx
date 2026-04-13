@@ -16,9 +16,9 @@ export function ErrBadge() {
           backgroundColor: err !== null ? (err.severity === Severities.HIGH ? "#ffbaad" : "#ffffb5") : "white",
           pointerEvents: err !== null ? "auto" : "none",
         }}
-        className="flex items-center fixed left-1/2 -translate-x-1/2 -translate-y-1/2 w-70 justify-between pl-3.5 pr-3 py-2 max-h-40 rounded-full"
+        className="flex items-center fixed left-1/2 -translate-x-1/2 -translate-y-1/2 w-110 pl-3.5 pr-3 py-2 max-h-30 rounded-full"
       >
-          <img src={err !== null ? (err.severity === Severities.HIGH ? errorIcon : warningIcon) : ""} className="aspect-square w-7"></img>
+          <img src={err !== null ? (err.severity === Severities.HIGH ? errorIcon : warningIcon) : ""} className="aspect-square w-7 mr-2"></img>
           {err !== null && (
             <div>
               <h1 className="font-bold sora-font">{err.title}</h1>

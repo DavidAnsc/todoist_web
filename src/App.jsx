@@ -28,9 +28,7 @@ function AppContent() {
 
       const tempToken = await postRefresh("/auth/refresh", setToken);
       if (tempToken === null) {
-        // not logged in
         console.log("not logged in");
-        handleShowError(new ErrorBadge("You're not logged in", "Pls log in using the sheet", Severities.MED), setError);
         setShowLogin(true);
         setShowSignup(false);
         return;

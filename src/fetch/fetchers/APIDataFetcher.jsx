@@ -17,11 +17,33 @@ export async function postUserRegister(url, usrName, psw, displayName, email, se
 
   if (response === null) {
     // server error
-    handleShowError(new ErrorBadge("Register: Server error", "Pls try to log in again or refresh the page", Severities.HIGH), setError)
+    handleShowError(new ErrorBadge("Register: Server error", "Pls try to register again or refresh the page", Severities.HIGH), setError)
     return null;
   } else if (await response.timestamp !== undefined) {
     // failed to register
-    handleShowError(new ErrorBadge("Failed to register", "Pls try to log in again or refresh the page", Severities.HIGH), setError)
+    console.log(response);
+    handleShowError(new ErrorBadge("Failed to register", "Pls try to register again or refresh the page", Severities.HIGH), setError)
+    return null;
+  }
+  
+  return response;
+}
+
+export async function postUserVerify(url, usrName, psw, displayName, email) {
+  const body = {
+    "username": usrName,
+    "displayName": displayName,
+    "password": psw,
+    "email": email,
+  };
+  
+  const response = await postUrl(url, body);
+  
+  if (response === null) {
+    // server error
+    return null;
+  } else if (await response.timestamp !== undefined) {
+    // failed to verify
     return null;
   }
   
