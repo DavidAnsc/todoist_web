@@ -1,14 +1,14 @@
 import { useState, useContext } from "react";
-import { ErrorBadgeContext } from "../contexts/Contexts";
+import { ErrorBadgeContext, TokenContext, UserContext } from "../contexts/Contexts";
 import exitImage from "../assets/icons/exit.png";
 import settingImage from "../assets/icons/setting.png";
 import { getUserLogout } from "../fetch/fetchers/APIDataFetcher";
 
-export function Navbar({userState, loginState, tokenState}) {
+export function Navbar({loginState}) {
   const { setError } = useContext(ErrorBadgeContext);
-  const {user, setUser} = userState;
+  const {jwtToken, setToken} = useContext(TokenContext);
+  const {user, setUser} = useContext(UserContext);
   const {setShowLogin} = loginState;
-  const {jwtToken, setToken} = tokenState;
 
   const [showMenu, setShowMenu] = useState(false);
 

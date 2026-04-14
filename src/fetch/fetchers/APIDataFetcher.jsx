@@ -1,4 +1,4 @@
-import { postUrl, getUrlWithBearer, postUrlNoCred } from "./FetchKit";
+import { postUrl, getUrlWithBearer, postUrlNoCred, postUrlWithBearer } from "./FetchKit";
 import { handleShowError } from "../../SetError";
 import { ErrorBadgeContext } from "../../contexts/Contexts";
 import { ErrorBadge, Severities } from "../models/ErrorBadgeModel";
@@ -117,12 +117,34 @@ export async function postRefresh(url, setToken) {
     // server error
     return null;
   } else if (await response.timestamp !== undefined) {
-    // failed to login
+    // failed to refresh
     return null;
   }
 
   setToken(response.jwtToken);
   return response.jwtToken;
+}
+
+export async function postNewTodoList(url, todoList, token, setError) {
+  const body = {
+    "todos": [],
+    "title": todoList.title,
+    "icon": todoList.icon,
+  }
+
+  const response = await postUrlWithBearer(url, body, token);
+
+  if (response === null) {
+    // server error
+    handleShowError(new ErrorBadge("Post todo list: Server error", "Pls try again", Severities.HIGH), setError);
+    return null;
+  } else if (await response.timestamp !== undefined) {
+    // failed to refresh
+    handleShowError(new ErrorBadge("Failed to post todo list", "Pls try again", Severities.HIGH), setError);
+    return null;
+  }
+
+  return response;
 }
 
 export async function postRefreshWithJWT(url, token, setToken) {

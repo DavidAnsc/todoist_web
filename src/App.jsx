@@ -3,23 +3,20 @@ import "./App.css"
 import { Navbar } from "./components/Navbar"
 import { Sidebar } from "./components/sidebar/Sidebar"
 import { Viewport } from "./components/viewport/Viewport"
-import { SelectionProvider, TodoListsProvider, TodosProvider, ErrorBadgeProvider } from "./contexts/Providers"
+import { SelectionProvider, TodoListsProvider, TodosProvider, ErrorBadgeProvider, TokenProvider, UserProvider } from "./contexts/Providers"
 import { LogInSheet, SignUpSheet } from "./components/account/SignInView"
 import { postRefresh, getUserGetInfo } from "./fetch/fetchers/APIDataFetcher"
-import { ErrorBadgeContext } from "./contexts/Contexts"
+import { TokenContext, UserContext } from "./contexts/Contexts"
 import { ErrorBadge } from "./fetch/models/ErrorBadgeModel"
 import { Severities } from "./fetch/models/ErrorBadgeModel"
-import { handleShowError } from "./SetError"
 import { ErrBadge } from "./components/error/ErrBadge"
 
 function AppContent() {
   const [showSignup, setShowSignup] = useState(null);
   const [showLogin, setShowLogin] = useState(null);
 
-  const [user, setUser] = useState(null);
-  const [jwtToken, setToken] = useState(null);
-
-  const { setError } = useContext(ErrorBadgeContext);
+  const { setUser } = useContext(UserContext);
+  const { setToken } = useContext(TokenContext);
   const showAuthOverlay = Boolean(showSignup || showLogin);
 
 
@@ -41,12 +38,12 @@ function AppContent() {
 
     runInit();
 
-  }, [setError]);
+  }, [setToken, setUser]);
 
   return (
     <>
       <div className="relative w-full min-h-screen">
-        <Navbar userState={{ user, setUser }} loginState={{ showLogin, setShowLogin }} tokenState={{ jwtToken, setToken }} setShowLogin={setShowLogin} />
+        <Navbar loginState={{ showLogin, setShowLogin }} setShowLogin={setShowLogin} />
         <TodosProvider>
           <TodoListsProvider>
             <SelectionProvider>
@@ -67,7 +64,7 @@ function AppContent() {
 
       {showAuthOverlay && (
         <div className="fixed inset-0 z-1000 grid place-items-center">
-          <LogInSheet userState={{ user, setUser }} signupState={{ showSignup, setShowSignup }} loginState={{ showLogin, setShowLogin }} tokenState={{ jwtToken, setToken }} />
+          <LogInSheet signupState={{ showSignup, setShowSignup }} loginState={{ showLogin, setShowLogin }} />
           <SignUpSheet signupState={{ showSignup, setShowSignup }} loginState={{ showLogin, setShowLogin }} />
         </div>
       )}
@@ -79,7 +76,11 @@ function App() {
   return (
     <>
       <ErrorBadgeProvider>
-        <AppContent />
+        <TokenProvider>
+          <UserProvider>
+            <AppContent />
+          </UserProvider>
+        </TokenProvider>
       </ErrorBadgeProvider>
     </>
   );

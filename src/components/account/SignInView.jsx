@@ -3,17 +3,17 @@ import downArrow from "../../assets/icons/downArrow.png"
 import checkMark from "../../assets/icons/checkMark.png"
 import crossMark from "../../assets/icons/crossMark.png"
 import { useState, useContext, useEffect } from "react";
-import { ErrorBadgeContext } from "../../contexts/Contexts";
+import { ErrorBadgeContext, TokenContext, UserContext } from "../../contexts/Contexts";
 import { postUserRegister, postUserLogin, getUserGetInfo, postUserVerify } from "../../fetch/fetchers/APIDataFetcher";
 import { handleShowError } from "../../SetError";
 import { ErrorBadge, Severities } from "../../fetch/models/ErrorBadgeModel";
 
-export function LogInSheet({ loginState, signupState, userState, tokenState }) {
-  const { setUser } = userState;
+export function LogInSheet({ loginState, signupState }) {
+  const { setUser } = useContext(UserContext);
 
   const { showLogin, setShowLogin } = loginState;
   const { setShowSignup } = signupState;
-  const { setToken } = tokenState;
+  const { setToken } = useContext(TokenContext);
 
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
   const [password, setPassword] = useState("");

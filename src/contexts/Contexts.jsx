@@ -10,3 +10,7 @@ export const TodoListsContext = createContext(null);
 export const TodosContext = createContext(null);
 
 export const ErrorBadgeContext = createContext(null);
+
+export const TokenContext = createContext(null);
+
+export const UserContext = createContext(null);

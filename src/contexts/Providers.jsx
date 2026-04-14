@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { SelectionContext, TodosContext, TodoListsContext, ErrorBadgeContext } from "./Contexts";
+import { SelectionContext, TodosContext, TodoListsContext, ErrorBadgeContext, TokenContext, UserContext } from "./Contexts";
 import { TodoModel, Priorities } from "../fetch/models/TodoModel";
 import { TodoListModel } from "../fetch/models/TodoListModel";
 import { ErrorBadge } from "../fetch/models/ErrorBadgeModel";
@@ -24,6 +24,26 @@ export function ErrorBadgeProvider({children}) {
       {children}
     </ErrorBadgeContext.Provider>
     </>
+  );
+}
+
+export function TokenProvider({children}) {
+  const [jwtToken, setToken] = useState(null);
+
+  return (
+    <TokenContext.Provider value={{jwtToken, setToken}}>
+      {children}
+    </TokenContext.Provider>
+  );
+}
+
+export function UserProvider({children}) {
+  const [user, setUser] = useState(null);
+
+  return (
+    <UserContext.Provider value={{user, setUser}}>
+      {children}
+    </UserContext.Provider>
   );
 }
 
