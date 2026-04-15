@@ -38,14 +38,15 @@ function AppContent() {
       setShowLogin(false);
       setShowSignup(false); 
       await getUserGetInfo("/auth/getUserInfo", setUser, tempToken, setToken)
-        // .then(async () => {
-      //   await getAllTodos("/app/allTodos", setTodos, setError, jwtToken, setToken);
-      // });
+        .then(async () => {
+          const newList = await getAllTodos("/app/allTodos", setError, jwtToken, setToken);
+          setTodos(newList);
+      });
     }
 
     runInit();
 
-  }, [setToken, setUser]);
+  }, [setToken, setUser, jwtToken, setTodos, setError]);
 
   return (
     <>

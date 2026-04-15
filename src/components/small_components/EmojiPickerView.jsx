@@ -1,9 +1,14 @@
 import { EmojiPicker } from "frimousse";
 import { useContext, useState } from "react";
 import { SelectionContext, TodoListsContext } from "../../contexts/Contexts";
+import { postUpdateList } from "../../fetch/fetchers/APIDataFetcher";
+import { TokenContext } from "../../contexts/Contexts";
+import { ErrorBadgeContext } from "../../contexts/Contexts";
 
 export function EmojiChooser({emojiPickerState}) {
   const {selected} = useContext(SelectionContext);
+  const { jwtToken, setToken } = useContext(TokenContext);
+  const {setError} = useContext(ErrorBadgeContext);
 
   const [searchContent, setSearchContent] = useState("");
 
@@ -13,7 +18,13 @@ export function EmojiChooser({emojiPickerState}) {
     return list.id == selected;
   }).at(0);
 
-  const updateIcon = (emoji) => {
+  const updateIcon = async (emoji) => {
+
+    const updatedList = {
+      ...selectedList,
+      icon: emoji,
+    }
+
     setTodoLists((prevLists) =>
       prevLists.map((t) =>
         t.id === selectedList.id ? {...t, icon: emoji} : t
@@ -21,6 +32,8 @@ export function EmojiChooser({emojiPickerState}) {
     );
     setSearchContent("");
     setShowEmojiPicker(false);
+
+    await postUpdateList("/app/editList", updatedList, jwtToken, setToken, setError)
   };
 
   return (

@@ -145,18 +145,18 @@ export async function postNewTodoList(url, todoList, token, setToken, setError) 
   return response;
 }
 
-export async function getAllTodos(url, setTodos, setError, token, setToken) {
+export async function getAllTodos(url, setError, token, setToken) {
   const response = await getUrlWithBearer(url, token, setToken);
 
   if (response === null) {
     handleShowError(new ErrorBadge("Fetch todos: Server error", "Pls try again", Severities.HIGH), setError);
-    return;
+    return null;
   } else if (await response.timestamp !== undefined) {
     handleShowError(new ErrorBadge("Failed to fetch todos", "Pls try again", Severities.HIGH), setError);
-    return;
+    return null;
   }
 
-  setTodos(response);
+  return response;
 } 
 
 export async function postUpdateTodo(url, todoModel, token, setToken, setError) {
@@ -190,6 +190,30 @@ export async function postUpdateTodo(url, todoModel, token, setToken, setError) 
   
   return response;
 }
+
+export async function postUpdateList(url, listModel, token, setToken, setError) {
+  const body = {
+    id: listModel.id,
+    icon: listModel.icon,
+    title: listModel.title,
+    parent: listModel.parent,
+  };
+
+  const response = await postUrlWithBearer(url, body, token, setToken);
+
+  if (response === null) {
+    handleShowError(new ErrorBadge("Update todo list: Server error", "Pls try again", Severities.HIGH), setError);
+    return null;
+  } else if (await response.timestamp !== undefined) {
+    handleShowError(new ErrorBadge("Failed to update todo list", "Pls try again", Severities.HIGH), setError);
+    console.log(response);
+    console.log(listModel);
+    return null;
+  }
+  
+  return response;
+}
+
 
 export async function postRefreshWithJWT(url, token, setToken) {
   const body = {

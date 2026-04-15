@@ -33,7 +33,7 @@ export function TodoRow({ todo, box }) {
       )
     );
 
-    postUpdateTodo("/app/editTodo", updatedTodo, jwtToken, setToken, setError);
+    await postUpdateTodo("/app/editTodo", updatedTodo, jwtToken, setToken, setError);
   };
 
   const handleFocusClick = (value) => {

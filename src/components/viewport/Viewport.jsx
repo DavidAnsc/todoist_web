@@ -3,10 +3,15 @@ import { useContext, useEffect, useState } from "react";
 import { Priorities } from "../../fetch/models/TodoModel";
 import { TodoRow } from "./TodoRow";
 import { EmojiChooser } from "../small_components/EmojiPickerView";
+import { postUpdateList } from "../../fetch/fetchers/APIDataFetcher";
+import { TokenContext } from "../../contexts/Contexts";
+import { ErrorBadgeContext } from "../../contexts/Contexts";
 
 
 export function Viewport() {
   const {selected} = useContext(SelectionContext);
+  const { jwtToken, setToken } = useContext(TokenContext);
+  const {setError} = useContext(ErrorBadgeContext);
   const {todos} = useContext(TodosContext) ?? [];
   const {todoLists, setTodoLists} = useContext(TodoListsContext) ?? [];
 
@@ -49,12 +54,19 @@ export function Viewport() {
     }
   }, [boxFocused, showEmojiPicker])
 
-  const updateTitle = (title) => {
+  const updateTitle = async (title) => {
+    const updatedList = {
+      ...selectedList,
+      title: title,
+    };
+
     setTodoLists((prevLists) =>
       prevLists.map((t) =>
         t.id === selectedList.id ? {...t, title: title} : t
       )
     );
+
+    await postUpdateList("/app/editList", updatedList, jwtToken, setToken, setError)
   };
 
   return (
