@@ -13,7 +13,7 @@ export function Sidebar() {
   const {setSelected} = useContext(SelectionContext);
   const {setError} = useContext(ErrorBadgeContext);
   const { user } = useContext(UserContext);
-  const {jwtToken} = useContext(TokenContext);
+  const {jwtToken, setToken} = useContext(TokenContext);
 
   const [parentObjectList, setParentObjectList] = useState(todoLists
     .filter((l) => {
@@ -40,7 +40,7 @@ export function Sidebar() {
     setTodoLists((old = []) => [...old, newTodoList]);
     setSelected(tempId);
 
-    const output = await postNewTodoList("/app/addTodo", newTodoList, jwtToken, setError);
+    const output = await postNewTodoList("/app/addList", newTodoList, jwtToken, setToken, setError);
 
     if (output === null) {
       setTodoLists((old = []) => old.filter((list) => list.id !== tempId));

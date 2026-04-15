@@ -5,18 +5,22 @@ import { Sidebar } from "./components/sidebar/Sidebar"
 import { Viewport } from "./components/viewport/Viewport"
 import { SelectionProvider, TodoListsProvider, TodosProvider, ErrorBadgeProvider, TokenProvider, UserProvider } from "./contexts/Providers"
 import { LogInSheet, SignUpSheet } from "./components/account/SignInView"
-import { postRefresh, getUserGetInfo } from "./fetch/fetchers/APIDataFetcher"
+import { postRefresh, getUserGetInfo, getAllTodos } from "./fetch/fetchers/APIDataFetcher"
 import { TokenContext, UserContext } from "./contexts/Contexts"
 import { ErrorBadge } from "./fetch/models/ErrorBadgeModel"
 import { Severities } from "./fetch/models/ErrorBadgeModel"
 import { ErrBadge } from "./components/error/ErrBadge"
+import { TodosContext } from "./contexts/Contexts"
+import { ErrorBadgeContext } from "./contexts/Contexts"
 
 function AppContent() {
   const [showSignup, setShowSignup] = useState(null);
   const [showLogin, setShowLogin] = useState(null);
 
   const { setUser } = useContext(UserContext);
-  const { setToken } = useContext(TokenContext);
+  const { jwtToken, setToken } = useContext(TokenContext);
+  const { setTodos } = useContext(TodosContext) ?? {};
+  const {setError} = useContext(ErrorBadgeContext);
   const showAuthOverlay = Boolean(showSignup || showLogin);
 
 
@@ -33,7 +37,10 @@ function AppContent() {
 
       setShowLogin(false);
       setShowSignup(false); 
-      await getUserGetInfo("/auth/getUserInfo", setUser, tempToken);
+      await getUserGetInfo("/auth/getUserInfo", setUser, tempToken, setToken)
+        // .then(async () => {
+      //   await getAllTodos("/app/allTodos", setTodos, setError, jwtToken, setToken);
+      // });
     }
 
     runInit();

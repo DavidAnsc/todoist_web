@@ -43,7 +43,7 @@ export function LogInSheet({ loginState, signupState }) {
       return;
     }
 
-    await getUserGetInfo("/auth/getUserInfo", setUser, output.jwtToken, setError);
+    await getUserGetInfo("/auth/getUserInfo", setUser, output.jwtToken, setToken);
 
     setShowLogin(false);
     setShowSignup(false);
@@ -129,6 +129,7 @@ export function SignUpSheet({ signupState, loginState }) {
   const { setShowLogin } = loginState;
   const { showSignup, setShowSignup } = signupState;
   const { setError } = useContext(ErrorBadgeContext);
+  const { setToken } = useContext(TokenContext);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -150,13 +151,13 @@ export function SignUpSheet({ signupState, loginState }) {
       return;
     }
 
-    const verification = await postUserVerify("/auth/verify", username.trim(), password, displayName.trim(), email.trim());
+    const verification = await postUserVerify("/auth/verify", username.trim(), password, displayName.trim(), email.trim(), setToken);
     if (verification === null || verification === false) {
       handleShowError(new ErrorBadge("The email/username has already been used", "Pls change your email if you've already registered, otherwise change the username.", Severities.HIGH), setError);
       return;
     }
 
-    const output = await postUserRegister("/auth/register", username.trim(), password, displayName.trim(), email.trim(), setError);
+    const output = await postUserRegister("/auth/register", username.trim(), password, displayName.trim(), email.trim(), setToken, setError);
     if (output === null) {
       return;
     }

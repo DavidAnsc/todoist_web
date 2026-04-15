@@ -1,35 +1,39 @@
 import { Priorities } from "../../fetch/models/TodoModel";
-import { useContext, useState, useRef, useEffect } from "react";
+import { useContext, useState, useRef } from "react";
 import { TodosContext } from "../../contexts/Contexts";
 import downArrow from "../../assets/icons/downArrow.png"
-// import { useOverflowDetector } from 'react-detectable-overflow';
+import { postUpdateTodo } from "../../fetch/fetchers/APIDataFetcher";
+import { TokenContext } from "../../contexts/Contexts";
+import { ErrorBadgeContext } from "../../contexts/Contexts";
 
 export function TodoRow({ todo, box }) {
   const { setTodos } = useContext(TodosContext) ?? {};
+  const { jwtToken, setToken } = useContext(TokenContext);
+  const {setError} = useContext(ErrorBadgeContext);
 
   const { boxFocused, setBoxFocused } = box;
   const [prevIsEditing, setPrevIsEditing] = useState(null);
+  const [title, setTitle] = useState(todo.title);
+  const [description, setDescription] = useState(todo.description);
+  const [priority, setPriority] = useState(todo.priority);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef(null);
 
-  const updateTitle = (nextTitle) => {
+  const saveTodoChanges = async (nextTitle = title, nextDescription = description, nextPriority = priority) => {
+    const updatedTodo = {
+      ...todo,
+      title: nextTitle,
+      description: nextDescription,
+      priority: nextPriority,
+    };
+
     setTodos((prevTodos) =>
       prevTodos.map((t) =>
-        t.id === todo.id ? { ...t, title: nextTitle } : t
+        t.id === todo.id ? updatedTodo : t
       )
     );
-  };
-  const updateDescription = (description) => {
-    setTodos((prevTodos) =>
-      prevTodos.map((t) =>
-        t.id === todo.id ? { ...t, description: description } : t
-      )
-    );
-  };
-  const updatePriority = (priority) => {
-    setTodos((prevTodos) =>
-      prevTodos.map((t) =>
-        t.id === todo.id ? { ...t, priority: priority } : t
-      )
-    );
+
+    postUpdateTodo("/app/editTodo", updatedTodo, jwtToken, setToken, setError);
   };
 
   const handleFocusClick = (value) => {
@@ -38,20 +42,12 @@ export function TodoRow({ todo, box }) {
     setShowDropdown(false);
   };
 
-  const priorityColour = todo.priority === Priorities.HIGH ? "rgb(233, 69, 76)" : todo.priority === Priorities.MED ? "rgb(92, 127, 222)" : "gray";
-
-  const [showDropdown, setShowDropdown] = useState(false);
-  const dropdownRef = useRef(null);
+  const priorityColour = priority === Priorities.HIGH ? "rgb(233, 69, 76)" : priority === Priorities.MED ? "rgb(92, 127, 222)" : "gray";
 
   const isEditing = boxFocused === todo.id;
 
 
-  useEffect(() => {
-    if (boxFocused != todo.id) {
-      setShowDropdown(false);
-    }
-  }, [boxFocused, todo.id]);
-  
+  const dropdownVisible = showDropdown && isEditing;
 
   return (
     <>
@@ -97,10 +93,15 @@ export function TodoRow({ todo, box }) {
                       item?.focus();
                     }
                   }}
-                  value={todo.title}
+                  value={title}
                   placeholder="Add a title..."
                   onFocus={() => handleFocusClick(true)}
-                  onChange={(e) => { updateTitle(e.target.value); handleFocusClick(true) }}
+                  onChange={(e) => {
+                    const nextTitle = e.target.value;
+                    setTitle(nextTitle);
+                    saveTodoChanges(nextTitle, description, priority);
+                    handleFocusClick(true);
+                  }}
                   rows="1"
                   style={{ display: isEditing ? "" : "none" }}
                   className="w-full col-start-1 row-start-1 inter-font focus:outline-none focus:ring-0"
@@ -113,21 +114,26 @@ export function TodoRow({ todo, box }) {
                     handleFocusClick(true);
                   }}
                 >
-                  {todo.title}
+                  {title}
                 </div>
               </div>
             </div>
             <div className="grid place-items-start w-full">
               <textarea
-                value={todo.description}
+                value={description}
                 placeholder="Add a description..."
                 onFocus={() => handleFocusClick(true)}
-                onChange={(e) => { updateDescription(e.target.value); handleFocusClick(true); }}
+                onChange={(e) => {
+                  const nextDescription = e.target.value;
+                  setDescription(nextDescription);
+                  saveTodoChanges(title, nextDescription, priority);
+                  handleFocusClick(true);
+                }}
                 style={{ display: isEditing ? "" : "none" }}
                 className={`w-full col-start-1 row-st art-1 h-15 inter-font resize-none focus:outline-none focus:pr-2 focus:ring-0 font-light text-sm text-gray-700`}
               >
               </textarea>
-              <div style={{ display: isEditing ? "none" : "" }} className="line-clamp-2 col-start-1 row-start-1 inter-font font-light text-sm text-gray-700">{todo.description}</div>
+              <div style={{ display: isEditing ? "none" : "" }} className="line-clamp-2 col-start-1 row-start-1 inter-font font-light text-sm text-gray-700">{description}</div>
             </div>
           </div>
         </div>
@@ -140,38 +146,44 @@ export function TodoRow({ todo, box }) {
           >
             <div onClick={() => setShowDropdown(!showDropdown)} className="flex justify-between px-2.5 w-full items-center row-start-1 col-start-1 cursor-pointer text-gray-900">
               <img src={downArrow} style={{rotate: showDropdown ? "180deg" : "0deg", transition: "rotate 200ms ease"}} className="w-3.5 h-2"></img>
-              <h1 className="inter-font text-xs">{todo.priority}</h1>
+              <h1 className="inter-font text-xs">{priority}</h1>
             </div>
           </div>
 
           <div
             ref={dropdownRef}
-            style={{display: showDropdown ? "" : "none"}}
+            style={{display: dropdownVisible ? "" : "none"}}
             className="absolute rounded-md p-3 bg-gray-100 max-w-20 text-xs text-gray-700"
           >
             <div onClick={() => {
-                updatePriority(Priorities.HIGH);
+                const nextPriority = Priorities.HIGH;
+                setPriority(nextPriority);
+                saveTodoChanges(title, description, nextPriority);
               }}
               className="cursor-pointer flex pb-2.5">
-              <svg style={{ visibility: todo.priority === Priorities.HIGH ? "" : "hidden" }} className=" row-start-1 col-start-1 w-3.5 h-3.5 pt-1 text-blue-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg style={{ visibility: priority === Priorities.HIGH ? "" : "hidden" }} className=" row-start-1 col-start-1 w-3.5 h-3.5 pt-1 text-blue-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               <div value={Priorities.HIGH} className="pl-1">HIGH</div>
             </div>
             <div onClick={() => {
-                updatePriority(Priorities.MED);
+                const nextPriority = Priorities.MED;
+                setPriority(nextPriority);
+                saveTodoChanges(title, description, nextPriority);
               }}
               className="cursor-pointer flex pb-2.5">
-             <svg style={{ visibility: todo.priority === Priorities.MED ? "" : "hidden" }} className=" row-start-1 col-start-1 w-3.5 h-3.5 pt-1 text-blue-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+             <svg style={{ visibility: priority === Priorities.MED ? "" : "hidden" }} className=" row-start-1 col-start-1 w-3.5 h-3.5 pt-1 text-blue-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                <path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
              </svg>
               <div value={Priorities.MED} className="pl-1">MED</div>
             </div>
             <div onClick={() => {
-                updatePriority(Priorities.LOW);
+                const nextPriority = Priorities.LOW;
+                setPriority(nextPriority);
+                saveTodoChanges(title, description, nextPriority);
               }}
               className="cursor-pointer flex">
-             <svg style={{ visibility: todo.priority === Priorities.LOW ? "" : "hidden" }} className=" row-start-1 col-start-1 w-3.5 h-3.5 pt-1 text-blue-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+             <svg style={{ visibility: priority === Priorities.LOW ? "" : "hidden" }} className=" row-start-1 col-start-1 w-3.5 h-3.5 pt-1 text-blue-600" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                <path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
              </svg>
               <div value={Priorities.LOW} className="pl-1">LOW</div>

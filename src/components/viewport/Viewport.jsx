@@ -11,7 +11,7 @@ export function Viewport() {
   const {todoLists, setTodoLists} = useContext(TodoListsContext) ?? [];
 
   const correspondingTodos = todos.filter((todo) => {
-    return todo.parent.id == selected;
+    return todo.todoList.id == selected;
   });
 
   const selectedList = todoLists.filter((list) => {
