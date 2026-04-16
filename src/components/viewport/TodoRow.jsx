@@ -58,7 +58,7 @@ export function TodoRow({ todo, box }) {
   return (
     <>
       <div style={{
-        marginBottom: showDropdown ? "90px" : "20px",
+        marginBottom: dropdownVisible ? "90px" : "20px",
 
         width: isEditing ? "469px" : "100%",
         paddingTop: isEditing ? "10px" : "0px",
@@ -146,8 +146,8 @@ export function TodoRow({ todo, box }) {
 
         <div className="relative select-none" style={{display: isEditing ? "" : "none", marginBottom: "14px"}}>
           <div style={{
-            backgroundColor: priorityColour,
-          }}
+              backgroundColor: priorityColour,
+            }}
             className={"w-20 h-8 rounded-md grid place-items-center"}
           >
             <div onClick={() => setShowDropdown(!showDropdown)} className="flex justify-between px-2.5 w-full items-center row-start-1 col-start-1 cursor-pointer text-gray-900">

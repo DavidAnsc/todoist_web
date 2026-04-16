@@ -185,6 +185,20 @@ export async function getAllTodos(url, setError, token, setToken) {
   }
 
   return response;
+}
+
+export async function getAllLists(url, setError, token, setToken) {
+  const response = await getWithBearer(url, token, setToken);
+
+  if (response === null) {
+    handleShowError(new ErrorBadge("Fetch lists: Server error", "Pls try again", Severities.HIGH), setError);
+    return null;
+  } else if (response.timestamp !== undefined) {
+    handleShowError(new ErrorBadge("Failed to fetch lists", "Pls try again", Severities.HIGH), setError);
+    return null;
+  }
+
+  return response;
 } 
 
 export async function postUpdateTodo(url, todoModel, token, setToken, setError) {

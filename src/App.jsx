@@ -5,8 +5,8 @@ import { Sidebar } from "./components/sidebar/Sidebar"
 import { Viewport } from "./components/viewport/Viewport"
 import { SelectionProvider, TodoListsProvider, TodosProvider, ErrorBadgeProvider, TokenProvider, UserProvider } from "./contexts/Providers"
 import { LogInSheet, SignUpSheet } from "./components/account/SignInView"
-import { postRefresh, getUserGetInfo, getAllTodos } from "./fetch/fetchers/APIDataFetcher"
-import { TokenContext, UserContext } from "./contexts/Contexts"
+import { postRefresh, getUserGetInfo, getAllTodos, getAllLists } from "./fetch/fetchers/APIDataFetcher"
+import { TodoListsContext, TokenContext, UserContext } from "./contexts/Contexts"
 import { ErrorBadge } from "./fetch/models/ErrorBadgeModel"
 import { Severities } from "./fetch/models/ErrorBadgeModel"
 import { ErrBadge } from "./components/error/ErrBadge"
@@ -20,6 +20,7 @@ function AppContent() {
   const { setUser } = useContext(UserContext);
   const { jwtToken, setToken } = useContext(TokenContext);
   const { setTodos } = useContext(TodosContext);
+  const { setTodoLists } = useContext(TodoListsContext);
   const {setError} = useContext(ErrorBadgeContext);
   const showAuthOverlay = Boolean(showSignup || showLogin);
 
@@ -39,15 +40,17 @@ function AppContent() {
       setShowSignup(false); 
       await getUserGetInfo("/auth/getUserInfo", setUser, tempToken, setToken)
         .then(async () => {
-          const newList = await getAllTodos("/app/allTodos", setError, jwtToken, setToken);
-          console.log(newList);
-          setTodos(newList);
+          const newTodos = await getAllTodos("/app/allTodos", setError, jwtToken, setToken);
+          setTodos(newTodos);
+
+          const newLists = await getAllLists("/app/allLists", setError, jwtToken, setToken);
+          setTodoLists(newLists);
       });
     }
 
     runInit();
 
-  }, [setToken, setUser, jwtToken, setTodos, setError]);
+  }, [setToken, setUser, jwtToken, setTodos, setError, setTodoLists]);
 
   return (
     <>
