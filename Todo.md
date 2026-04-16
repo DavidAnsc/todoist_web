@@ -1,10 +1,8 @@
 # HIGH
 [] fix the setTodos is not a function problem
-[] start fully integrating API
-  [] add a method for fetching & updating todo lists
-[] add the todolist adding and todo adding
+[x] add the todolist adding and todo adding
   [x] add todolist adding
-  [] add todo adding
+  [x] add todo adding
 [x] add the constraints for username, passwords, emails... Apr12
 [x] add the "uniqueness check" for username and emails. Frontend & Backend Apr12
 

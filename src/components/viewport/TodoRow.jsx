@@ -1,8 +1,9 @@
 import { Priorities } from "../../fetch/models/TodoModel";
 import { useContext, useState, useRef } from "react";
 import { TodosContext } from "../../contexts/Contexts";
-import downArrow from "../../assets/icons/downArrow.png"
-import { postUpdateTodo } from "../../fetch/fetchers/APIDataFetcher";
+import downArrow from "../../assets/icons/downArrow.png";
+import trash from "../../assets/icons/bin.png";
+import { deleteTodo, postUpdateTodo } from "../../fetch/fetchers/APIDataFetcher";
 import { TokenContext } from "../../contexts/Contexts";
 import { ErrorBadgeContext } from "../../contexts/Contexts";
 
@@ -18,8 +19,11 @@ export function TodoRow({ todo, box }) {
   const [priority, setPriority] = useState(todo.priority);
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
+  const priorityColour = priority === Priorities.HIGH ? "rgb(233, 69, 76)" : priority === Priorities.MED ? "rgb(92, 127, 222)" : "gray";
+  const isEditing = boxFocused === todo.id;
+  const dropdownVisible = showDropdown && isEditing;
 
-  const saveTodoChanges = async (nextTitle = title, nextDescription = description, nextPriority = priority) => {
+  async function saveTodoChanges(nextTitle = title, nextDescription = description, nextPriority = priority) {
     const updatedTodo = {
       ...todo,
       title: nextTitle,
@@ -36,18 +40,20 @@ export function TodoRow({ todo, box }) {
     await postUpdateTodo("/app/editTodo", updatedTodo, jwtToken, setToken, setError);
   };
 
-  const handleFocusClick = (value) => {
+  async function removeTodo(id) {
+    console.log("/app/delTodo?id=" + id);
+    const didDelete = await deleteTodo(`/app/delTodo?id=${id}`, jwtToken, setToken, setError);
+    if (didDelete) {
+      setTodos((prev = []) => prev.filter((i) => i.id !== id));
+    }
+  }
+
+  function handleFocusClick(value) {
     setPrevIsEditing(isEditing);
     setBoxFocused(value ? todo.id : -1);
     setShowDropdown(false);
   };
 
-  const priorityColour = priority === Priorities.HIGH ? "rgb(233, 69, 76)" : priority === Priorities.MED ? "rgb(92, 127, 222)" : "gray";
-
-  const isEditing = boxFocused === todo.id;
-
-
-  const dropdownVisible = showDropdown && isEditing;
 
   return (
     <>
@@ -189,6 +195,12 @@ export function TodoRow({ todo, box }) {
               <div value={Priorities.LOW} className="pl-1">LOW</div>
             </div>
           </div>
+
+          <img 
+            src={trash} 
+            className="w-5 h-5 cursor-pointer absolute right-5 bottom-0"
+            onClick={() => removeTodo(todo.id)}
+          />
 
         </div>
 

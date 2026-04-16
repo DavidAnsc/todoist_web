@@ -1,5 +1,5 @@
 import { SidebarRow } from './SidebarRow';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useRef } from 'react';
 import { TodoListsContext } from '../../contexts/Contexts';
 import { TodoListModel } from '../../fetch/models/TodoListModel';
 import { SelectionContext } from '../../contexts/Contexts';
@@ -9,6 +9,8 @@ import { TokenContext } from '../../contexts/Contexts';
 import { UserContext } from '../../contexts/Contexts';
 
 export function Sidebar() {
+  const incrementation = useRef(-2);
+
   const {todoLists, setTodoLists} = useContext(TodoListsContext) ?? [];
   const {setSelected} = useContext(SelectionContext);
   const {setError} = useContext(ErrorBadgeContext);
@@ -34,21 +36,21 @@ export function Sidebar() {
   }, [todoLists]);
 
   async function handleAddTodolist() {
-    const tempId = -Date.now();
-    const newTodoList = new TodoListModel(tempId, "📱", "New Todo List", null);
+    const newTodoList = new TodoListModel(incrementation.current, "📱", "New Todo List", null);
+    incrementation.current -= 1;
 
     setTodoLists((old = []) => [...old, newTodoList]);
-    setSelected(tempId);
+    setSelected(newTodoList.id);
 
     const output = await postNewTodoList("/app/addList", newTodoList, jwtToken, setToken, setError);
 
     if (output === null) {
-      setTodoLists((old = []) => old.filter((list) => list.id !== tempId));
+      setTodoLists((old = []) => old.filter((list) => list.id !== newTodoList.id));
       return;
     }
 
     const savedTodoList = new TodoListModel(output.id, newTodoList.icon, newTodoList.title, null);
-    setTodoLists((old = []) => old.map((list) => list.id === tempId ? savedTodoList : list));
+    setTodoLists((old = []) => old.map((list) => list.id === newTodoList.id ? savedTodoList : list));
     setSelected(output.id);
   }
 

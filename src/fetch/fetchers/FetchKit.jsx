@@ -12,9 +12,9 @@ async function makeRefresh(setToken) {
   try {
     const output = await r.json();
     setToken(output.jwtToken);
-    return;
+    return output.jwtToken;
   } catch {
-    return;
+    return null;
   }
 }
 
@@ -37,7 +37,7 @@ export async function getUrl(url) {
 }
 
 //* THIS FUNCTION HAS REFRESH TRY
-export async function getUrlWithBearer(url, token, setToken, retried=false) {
+export async function getWithBearer(url, token, setToken, retried=false) {
   const r = await fetch(url, {
     method: 'GET',
     headers: {
@@ -46,17 +46,41 @@ export async function getUrlWithBearer(url, token, setToken, retried=false) {
     credentials: "include",
   })
 
+  if (r.status === 401 && retried === false) {
+    const newToken = await makeRefresh(setToken);
+    if (newToken === null) {
+      return null;
+    }
+    return await getWithBearer(url, newToken, setToken, true);
+  }
+
   try {
     const output = await r.json();
     return output;
   } catch {
-    if (r.status === 401 && retried === false) {
-      await makeRefresh(setToken).then(async () => {
-        return await getUrlWithBearer(url, token, setToken, true);
-      });
-    } else {
+    return null;
+  }
+}
+
+export async function deleteWithBearer(url, token, setToken, retried=false) {
+  const r = await fetch(url, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    },
+    credentials: "include",
+  })
+
+  if (r.status === 401 && retried === false) {
+    const newToken = await makeRefresh(setToken);
+    if (newToken === null) {
       return null;
     }
+    return await deleteWithBearer(url, newToken, setToken, true);
+  } else if (r.status >= 200 && r.status < 300) {
+    return;
+  } else {
+    throw new Error("{src/fetch/FetchKit.jsx/deleteWithBearer()} Failed to complete the delete request");
   }
 }
 
@@ -111,18 +135,18 @@ export async function postUrlWithBearer(url, body, token, setToken, retried=fals
     credentials: "include",
   })
 
+  if (r.status === 401 && retried === false) {
+    const newToken = await makeRefresh(setToken);
+    if (newToken === null) {
+      return null;
+    }
+    return await postUrlWithBearer(url, body, newToken, setToken, true);
+  }
+
   try {
     const output = await r.json();
     return output;
   } catch {
-    if (r.status === 401 && retried === false) {
-      await makeRefresh(setToken).then(async () => {
-          return await postUrlWithBearer(url, body, token, setToken, true);
-        }
-      );
-      
-    } else {
-      return null;
-    }
+    return null;
   }
 }

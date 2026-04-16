@@ -19,7 +19,7 @@ function AppContent() {
 
   const { setUser } = useContext(UserContext);
   const { jwtToken, setToken } = useContext(TokenContext);
-  const { setTodos } = useContext(TodosContext) ?? {};
+  const { setTodos } = useContext(TodosContext);
   const {setError} = useContext(ErrorBadgeContext);
   const showAuthOverlay = Boolean(showSignup || showLogin);
 
@@ -40,6 +40,7 @@ function AppContent() {
       await getUserGetInfo("/auth/getUserInfo", setUser, tempToken, setToken)
         .then(async () => {
           const newList = await getAllTodos("/app/allTodos", setError, jwtToken, setToken);
+          console.log(newList);
           setTodos(newList);
       });
     }
@@ -52,8 +53,7 @@ function AppContent() {
     <>
       <div className="relative w-full min-h-screen">
         <Navbar loginState={{ showLogin, setShowLogin }} setShowLogin={setShowLogin} />
-        <TodosProvider>
-          <TodoListsProvider>
+        
             <SelectionProvider>
               <div className="flex items-start">
                 <Sidebar />
@@ -62,8 +62,6 @@ function AppContent() {
                 </div>
               </div>
             </SelectionProvider>
-          </TodoListsProvider>
-        </TodosProvider>
       </div>
 
       <div className="fixed left-1/2 top-1/5 -translate-x-1/2 -translate-y-1/2 z-2000">
@@ -83,13 +81,17 @@ function AppContent() {
 function App() {
   return (
     <>
-      <ErrorBadgeProvider>
-        <TokenProvider>
-          <UserProvider>
-            <AppContent />
-          </UserProvider>
-        </TokenProvider>
-      </ErrorBadgeProvider>
+    <TodosProvider>
+      <TodoListsProvider>
+        <ErrorBadgeProvider>
+          <TokenProvider>
+            <UserProvider>
+              <AppContent />
+            </UserProvider>
+          </TokenProvider>
+        </ErrorBadgeProvider>
+      </TodoListsProvider>
+    </TodosProvider>
     </>
   );
 }

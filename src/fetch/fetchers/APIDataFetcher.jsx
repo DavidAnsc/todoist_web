@@ -1,4 +1,4 @@
-import { postUrl, getUrlWithBearer, postUrlNoCred, postUrlWithBearer } from "./FetchKit";
+import { postUrl, getWithBearer, postUrlNoCred, postUrlWithBearer, deleteWithBearer } from "./FetchKit";
 import { handleShowError } from "../../SetError";
 import { ErrorBadgeContext } from "../../contexts/Contexts";
 import { ErrorBadge, Severities } from "../models/ErrorBadgeModel";
@@ -7,10 +7,10 @@ import { ErrorBadge, Severities } from "../models/ErrorBadgeModel";
 export async function postUserRegister(url, usrName, psw, displayName, email, setError) {
   
   const body = {
-    "username": usrName,
-    "displayName": displayName,
-    "password": psw,
-    "email": email,
+    username: usrName,
+    displayName: displayName,
+    password: psw,
+    email: email,
   };
 
   const response = await postUrl(url, body);
@@ -31,10 +31,10 @@ export async function postUserRegister(url, usrName, psw, displayName, email, se
 
 export async function postUserVerify(url, usrName, psw, displayName, email) {
   const body = {
-    "username": usrName,
-    "displayName": displayName,
-    "password": psw,
-    "email": email,
+    username: usrName,
+    displayName: displayName,
+    password: psw,
+    email: email,
   };
   
   const response = await postUrl(url, body);
@@ -52,8 +52,8 @@ export async function postUserVerify(url, usrName, psw, displayName, email) {
 
 export async function postUserLogin(url, usrNameOrEmail, psw, setToken, setError) {
   const body = {
-    "usernameOrEmail" : usrNameOrEmail,
-    "password" : psw,
+    usernameOrEmail : usrNameOrEmail,
+    password : psw,
   };
 
   const response = await postUrlNoCred(url, body);
@@ -73,7 +73,7 @@ export async function postUserLogin(url, usrNameOrEmail, psw, setToken, setError
 }
 
 export async function getUserLogout(url, jwtToken, setUser, setToken, setError) {
-  const response = await getUrlWithBearer(url, jwtToken, setToken);
+  const response = await getWithBearer(url, jwtToken, setToken);
 
   if (response === null) {
     // server error
@@ -93,7 +93,7 @@ export async function getUserLogout(url, jwtToken, setUser, setToken, setError) 
 
 export async function getUserGetInfo(url, setUser, token, setToken) {
   
-  const response = await getUrlWithBearer(url, token, setToken);
+  const response = await getWithBearer(url, token, setToken);
   
   if (response === null) {
     // server error
@@ -127,9 +127,9 @@ export async function postRefresh(url, setToken) {
 
 export async function postNewTodoList(url, todoList, token, setToken, setError) {
   const body = {
-    "todos": [],
-    "title": todoList.title,
-    "icon": todoList.icon,
+    todos: [], // because lists exist first and then todos, therefore it's always an empty array.
+    title: todoList.title,
+    icon: todoList.icon,
   }
 
   const response = await postUrlWithBearer(url, body, token, setToken);
@@ -145,13 +145,41 @@ export async function postNewTodoList(url, todoList, token, setToken, setError) 
   return response;
 }
 
+export async function postNewTodo(url, todoModel, token, setToken, setError) {
+  const body = {
+    title: todoModel.title,
+    description: todoModel.description,
+    priority: todoModel.priority,
+    todoList: {
+      children: [],
+      icon: todoModel.todoList.icon,
+      id: todoModel.todoList.id,
+      parent: todoModel.todoList.parent,
+      title: todoModel.todoList.title
+    }
+  };
+
+  const response = await postUrlWithBearer(url, body, token, setToken);
+  
+  if (response === null) {
+    handleShowError(new ErrorBadge("Post todo: Server error", "Pls try again", Severities.HIGH), setError);
+    return null;
+  } else if (await response.timestamp !== undefined) {
+    handleShowError(new ErrorBadge("Failed to post todo", "Pls try again", Severities.HIGH), setError);
+    return null;
+  }
+  
+  return response;
+}
+
+
 export async function getAllTodos(url, setError, token, setToken) {
-  const response = await getUrlWithBearer(url, token, setToken);
+  const response = await getWithBearer(url, token, setToken);
 
   if (response === null) {
     handleShowError(new ErrorBadge("Fetch todos: Server error", "Pls try again", Severities.HIGH), setError);
     return null;
-  } else if (await response.timestamp !== undefined) {
+  } else if (response.timestamp !== undefined) {
     handleShowError(new ErrorBadge("Failed to fetch todos", "Pls try again", Severities.HIGH), setError);
     return null;
   }
@@ -162,17 +190,17 @@ export async function getAllTodos(url, setError, token, setToken) {
 export async function postUpdateTodo(url, todoModel, token, setToken, setError) {
 
   const body = {
-    "description": todoModel.description,
-    "id": todoModel.id,
-    "priority": todoModel.priority,
-    "status": todoModel.status,
-    "title": todoModel.title,
-    "todoList": {
-      "children": [],
-      "icon": todoModel.todoList.icon,
-      "id": todoModel.todoList.id,
-      "parent": todoModel.todoList.parent,
-      "title": todoModel.todoList.title
+    description: todoModel.description,
+    id: todoModel.id,
+    priority: todoModel.priority,
+    status: todoModel.status,
+    title: todoModel.title,
+    todoList: {
+      children: [],
+      icon: todoModel.todoList.icon,
+      id: todoModel.todoList.id,
+      parent: todoModel.todoList.parent,
+      title: todoModel.todoList.title
     }
   };
 
@@ -214,10 +242,29 @@ export async function postUpdateList(url, listModel, token, setToken, setError) 
   return response;
 }
 
+export async function deleteTodo(url, token, setToken, setError) {
+  try {
+    await deleteWithBearer(url, token, setToken);
+    return true;
+  } catch {
+    handleShowError(new ErrorBadge("Failed to delete todo", "Pls try again", Severities.HIGH), setError);
+    return false;
+  }
+}
+
+export async function deleteTodoList(url, token, setToken, setError) {
+  try {
+    await deleteWithBearer(url, token, setToken);
+    return true;
+  } catch {
+    handleShowError(new ErrorBadge("Failed to delete todo list", "Pls try again", Severities.HIGH), setError);
+    return false;
+  }
+}
 
 export async function postRefreshWithJWT(url, token, setToken) {
   const body = {
-    "jwt" : token,
+    jwt : token,
   };
 
   const response = await postUrl(url, body);
