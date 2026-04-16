@@ -100,6 +100,7 @@ export function Viewport() {
     if (didDelete) {
       setTodoLists((prev = []) => prev.filter((i) => i.id !== id || i.parent !== id));
     }
+    window.location.reload();
   }
 
   return (

@@ -1,5 +1,5 @@
 # HIGH
-[] fix the setTodos is not a function problem
+[x] fix the setTodos is not a function problem
 [x] add the todolist adding and todo adding
   [x] add todolist adding
   [x] add todo adding
@@ -9,4 +9,6 @@
 
 
 # MED
+[] integrate the account-specific todo mode (todos are separated from accounts, this usually doesn't need this frontend to do anything.)
+[] add the todo disappear functionality
 [x] change the implementation of getting todos & todolists to the way that the API actually works: a todolist has an array called todos, and all its todos are inside there.

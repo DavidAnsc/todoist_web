@@ -16,7 +16,7 @@ export function SidebarRow({list, id, icon, name}) {
       <Row key={child.id} 
         id={child.id} 
         icon={child.icon} 
-        name={child.title} 
+        name={child.title}
         indent={1} 
         childState={{showChild, setShowChild}} 
       />

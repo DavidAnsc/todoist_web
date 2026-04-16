@@ -1,4 +1,4 @@
-import { Priorities } from "../../fetch/models/TodoModel";
+import { Priorities, TodoModel } from "../../fetch/models/TodoModel";
 import { useContext, useState, useRef } from "react";
 import { TodosContext } from "../../contexts/Contexts";
 import downArrow from "../../assets/icons/downArrow.png";
@@ -16,6 +16,7 @@ export function TodoRow({ todo, box }) {
   const [prevIsEditing, setPrevIsEditing] = useState(null);
   const [title, setTitle] = useState(todo.title);
   const [description, setDescription] = useState(todo.description);
+  const [todoStatus, setStatus] = useState(todo.status);
   const [priority, setPriority] = useState(todo.priority);
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
@@ -23,12 +24,13 @@ export function TodoRow({ todo, box }) {
   const isEditing = boxFocused === todo.id;
   const dropdownVisible = showDropdown && isEditing;
 
-  async function saveTodoChanges(nextTitle = title, nextDescription = description, nextPriority = priority) {
+  async function saveTodoChanges(nextTitle = title, nextDescription = description, nextPriority = priority, nextStatus = todoStatus) {
     const updatedTodo = {
       ...todo,
       title: nextTitle,
       description: nextDescription,
       priority: nextPriority,
+      status: nextStatus,
     };
 
     setTodos((prevTodos) =>
@@ -39,6 +41,13 @@ export function TodoRow({ todo, box }) {
 
     await postUpdateTodo("/app/editTodo", updatedTodo, jwtToken, setToken, setError);
   };
+
+  async function updateTodoStatus() {
+    const nextStatus = !todoStatus;
+    setStatus(nextStatus);
+
+    saveTodoChanges(title, description, priority, nextStatus);
+  }
 
   async function removeTodo(id) {
     console.log("/app/delTodo?id=" + id);
@@ -74,9 +83,9 @@ export function TodoRow({ todo, box }) {
       >
 
         <div className="flex items-start w-full">
-          <div className="grid place-items-center">
-            <div style={{ marginTop: "4px" }} className={"row-start-1 col-start-1 w-5 h-5" + (todo.status === false ? " bg-white " : " bg-blue-600 ") + "border border-gray-400 rounded-md"}></div>
-            <svg style={{ display: todo.status === false ? "none" : "" }} className="row-start-1 col-start-1 w-4 h-4 pt-1 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <div className="grid place-items-center" onClick={updateTodoStatus}>
+            <div style={{ marginTop: "4px" }} className={"row-start-1 col-start-1 w-5 h-5" + (todoStatus === false ? " bg-white " : " bg-blue-600 ") + "border border-gray-400 rounded-md"}></div>
+            <svg style={{ display: todoStatus === false ? "none" : "" }} className="row-start-1 col-start-1 w-4 h-4 pt-1 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
