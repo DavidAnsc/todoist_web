@@ -74,12 +74,13 @@ export async function deleteWithBearer(url, token, setToken, retried=false) {
   if (r.status === 401 && retried === false) {
     const newToken = await makeRefresh(setToken);
     if (newToken === null) {
-      return null;
+      throw new Error("{src/fetch/FetchKit.jsx/deleteWithBearer()} Can't refresh access token");
     }
     return await deleteWithBearer(url, newToken, setToken, true);
   } else if (r.status >= 200 && r.status < 300) {
     return;
   } else {
+    console.log(r.json());
     throw new Error("{src/fetch/FetchKit.jsx/deleteWithBearer()} Failed to complete the delete request");
   }
 }

@@ -210,11 +210,7 @@ export async function postUpdateTodo(url, todoModel, token, setToken, setError) 
     status: todoModel.status,
     title: todoModel.title,
     todoList: {
-      children: [],
-      icon: todoModel.todoList.icon,
       id: todoModel.todoList.id,
-      parent: todoModel.todoList.parent,
-      title: todoModel.todoList.title
     }
   };
 

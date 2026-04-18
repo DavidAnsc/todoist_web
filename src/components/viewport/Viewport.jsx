@@ -58,7 +58,7 @@ export function Viewport() {
     }
   }, [boxFocused, showEmojiPicker])
 
-  const updateTitle = async (title) => {
+  async function updateTitle(title) {
     const updatedList = {
       ...selectedList,
       title: title,
@@ -71,7 +71,7 @@ export function Viewport() {
     );
 
     await postUpdateList("/app/editList", updatedList, jwtToken, setToken, setError)
-  };
+  }
 
   async function addNewTodo() {
     const newTodo = new TodoModel(incrementation.current, "new todo", "", Priorities.LOW, false, selectedList);
@@ -93,7 +93,7 @@ export function Viewport() {
     const savedTodo = new TodoModel(output.id, newTodo.title, newTodo.description, newTodo.priority, newTodo.status, newTodo.todoList);
     setTodos((prev = []) => prev.map((i) => i.id === newTodo.id ? savedTodo : i));
     setBoxFocused(savedTodo.id);
-  };
+  }
 
   async function removeList(id) {
     const didDelete = await deleteTodoList(`/app/delList?id=${id}`, jwtToken, setToken, setError);
